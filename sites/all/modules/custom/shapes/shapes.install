@@ -1,0 +1,50 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for Shapes module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function shapes_schema() {
+  $schema['shapes'] = array(
+    'description' => 'Shapes entries.',
+    'fields' => array(
+      'sid' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique shape ID.',
+      ),
+      'shape_n_value' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Numeric value of shape.',
+      ),
+      'shape_t_value' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+        'size' => 'normal',
+        'description' => 'Human readable name of shape.',
+      ),
+      'coordinates' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+        'size' => 'normal',
+        'description' => 'Arguments entered for respective shape.',
+      ),
+      'area' => array(
+        'type' => 'float',
+        'not null' => TRUE,
+        'default' => 0.0,
+        'description' => "The calculated are for shape.",
+      ),
+    ),
+    'primary key' => array('sid'),
+  );
+
+  return $schema;
+}

@@ -1,0 +1,175 @@
+<?php
+/**
+ * Shapes module
+ *
+ * This module implements the following behaviors:
+ *
+ * 1. When the user chooses a shape followed by the corresponding number of numeric
+ * parameters, define that shape and show its area. The numbers may be of type double.
+ * Examples:
+ * - circle 1.7 -5.05 6.9
+ * - triangle 4.5 1 -2.5 -33 23 0.3
+ * - donut 4.5 7.8 1.5 1.8
+ * For the circle, the numbers are the x and y coordinates of the centre followed by the radius.
+ * For the triangle it is the x and y coordinates of the three vertices (six numbers in total).
+ * For the donut it is the x and y of the centre followed by the two radiuses.
+ *
+ * In addition, every time such an input is entered, the application print the result out in a
+ * standardized form, for example:
+ * - circle with centre at (1.7, -5.05) and radius 6.9. Area: 149.57 m2
+ * 
+ * 2. If the user enters anything unexpected (including errors like too few/many arguments,
+ * incorrect number format, etc.), it is printed a meaningful error message.
+ *
+ * 3. Unit Testing.
+ *
+ * @autor Enrique Worwa <eworwa@gmail.com>
+ *
+ * @version 1.0
+ */
+ 
+/**
+ * Implementation of hook_help()
+ */
+function shapes_help($path, $arg) {
+    switch($path) {
+        case 'admin/help#sample' :
+            return '<p>' . t('Sample help text') . '</p>';
+            break;
+    }
+}
+
+
+/**
+ * Implementation of hook_permission()
+ * NOTE: former hook_perm, but this hook is for D6, not D7, fixed
+ */
+function shapes_permission() {
+    return array(
+        'administer sample page' => array(
+            'title' => t('Administer shapes module'),
+            'description' => t('Perform administration tasks for shapes module'),
+        )
+    );
+}
+
+
+/**
+ * Implementation of hook_menu()
+ */
+function shapes_menu() {
+    $items['shapes'] = array(
+        'title' => 'Shapes',
+        'description' => t('Shapes area calculator'),
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('shapes_form'),
+        'access arguments' => array('administer sample page'),
+        'type' => MENU_NORMAL_ITEM,
+	'menu_name' => 'navigation',
+	
+    );
+    $items['shapes/view'] = array(
+        'title' => 'View Shapes',
+        'description' => t('View all registered shapes'),
+        'page callback' => 'print_shapes',
+        'access arguments' => array('administer sample page'),
+        'type' => MENU_NORMAL_ITEM,
+	'menu_name' => 'navigation',
+    );
+
+    return $items;
+}
+
+
+/**
+ * Sample Form
+ */
+function shapes_form($form, &$form_state) {
+    $form = array();
+
+    $form['description'] = array(
+      '#type' => 'markup',
+      '#markup' => '<p>' . t('For the circle, the numbers are the x and y coordinates of the centre followed by the radius') . '</p><p>' . t('For the triangle it is the x and y coordinates of the three vertices (six numbers in total)') . '</p><p>' . t('For the donut it is the x and y of the centre followed by the two radiuses') . '</p>',
+    );
+
+    $form['shape'] = array(
+      '#type' => 'select',
+      '#title' => t('Shape'),
+      '#description' => t('Choose a shape'),
+      '#options' => array('Circle', 'Triangle', 'Donut'),
+      '#required' => TRUE,
+    );
+
+    $form['coordinates'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Coordinates'),
+      '#description' => t('Write here the coordinates of the shape'),
+      '#required' => TRUE,
+      '#size' => '60',
+    );
+
+    $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Calculate Area'),
+    );
+
+    return $form;
+}
+
+/**
+ * Implementation of hook_form_validate()
+ */
+function shapes_form_validate($form, &$form_state){
+	$coordinates=$form_state['values']['coordinates'];
+	$shape=$form_state['values']['shape'];
+	$shapeObject;
+	switch($shape){
+		case 0: // Circle
+			$shapeObject=new Circle($coordinates);
+			break;
+		case 1: // Triangle
+			$shapeObject=new Triangle($coordinates);
+			break;
+		case 2: // Donut
+			$shapeObject=new Donut($coordinates);
+			break;
+	}
+	
+	$err_msg=$shapeObject->validateArgs();
+
+	if($err_msg!=""){
+		drupal_set_message(t('There was an error processing your request, please check below.'), 'error');
+		form_set_error('coordinates', t('Invalid value for field Coordinates<ul>'.$err_msg.'</ul>'));
+	}
+}
+
+/**
+ * Implementation of hook_form_submit()
+ */
+function shapes_form_submit($form, &$form_state) {
+	$coordinates=$form_state['values']['coordinates'];
+	$shape=$form_state['values']['shape'];
+	$shapeObject;
+	switch($shape){
+		case 0: // Circle
+			$shapeObject=new Circle($coordinates);
+			break;
+		case 1: // Triangle
+			$shapeObject=new Triangle($coordinates);
+			break;
+		case 2: // Donut
+			$shapeObject=new Donut($coordinates);
+			break;
+	}
+	drupal_set_message(t('Your request was succesfully procesed.'));
+	drupal_set_message(t($shapeObject->getResultMessage()));
+
+	$shapeObject->saveRecord($shape);
+}
+
+/**
+ * Print all stored shapes
+ */
+function print_shapes(){
+	return Shape::listStoredShapes();
+}

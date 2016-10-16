@@ -1,0 +1,10 @@
+name = Shapes Module
+description = Sample module to start with
+core = 7.x
+package = Shapes
+version = 1.0
+files[] = shapes.test
+files[] = includes/Shape.php
+files[] = includes/Circle.php
+files[] = includes/Triangle.php
+files[] = includes/Donut.php

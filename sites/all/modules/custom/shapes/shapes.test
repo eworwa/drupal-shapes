@@ -1,0 +1,239 @@
+<?php
+/**
+ * @file
+ * Tests for the Shapes module.
+ */
+
+/**
+ * Tests the circle area calculation.
+ */
+class CircleAreaTestCase extends DrupalWebTestCase {
+	private $user;
+	// Test variables.		
+	private $shape=0;
+	private $coordinates='5 5 2';
+	private $msg='Your request was succesfully procesed.';
+
+	public static function getInfo() {
+		return array(
+			'name' => 'Circle Area Test',
+			'description' => 'Ensure the right calculation for circle area.',
+			'group' => 'Shapes',
+			);
+	}
+
+	public function setUp() {
+		// Enable any modules required for the test.
+		parent::setUp('shapes');
+
+		// Regular user, who will perform the test.
+		$this->user = $this->drupalCreateUser(array('administer sample page'));
+		$this->drupalLogin($this->user);
+	}
+
+	public function testCircleArea(){
+		$edit = array(
+			'shape' => $this->shape,
+			'coordinates' => $this->coordinates,
+			);
+		$this->drupalPost('shapes', $edit, t('Calculate Area'));
+
+		// Look for confirmation message
+		$this->assertText(t($this->msg));
+	}
+}
+
+/**
+ * Tests the amount of arguments for Circle area calculation.
+ */
+class AmountArgumentsCircleAreaTestCase extends DrupalWebTestCase {
+	private $user;
+	// Test variables.		
+	private $shape=0;
+	private $coordinates='5 5 2 5';
+	private $msg='There was an error processing your request, please check below.';
+
+	public static function getInfo() {
+		return array(
+			'name' => 'Amount of arguments for Circle area calculation',
+			'description' => 'Validate behaivor with wrong number of arguments provided for Circle area calculation.',
+			'group' => 'Shapes',
+			);
+	}
+
+	public function setUp() {
+		// Enable any modules required for the test.
+		parent::setUp('shapes');
+
+		// Regular user, who will perform the test.
+		$this->user = $this->drupalCreateUser(array('administer sample page'));
+		$this->drupalLogin($this->user);
+	}
+
+	public function testAmountArgumentsCircleArea(){
+		$edit = array(
+			'shape' => $this->shape,
+			'coordinates' => $this->coordinates,
+			);
+		$this->drupalPost('shapes', $edit, t('Calculate Area'));
+
+		// Look for confirmation message
+		$this->assertText(t($this->msg));
+	}
+}
+
+/**
+ * Tests the amount of arguments for Triangle area calculation.
+ */
+class AmountArgumentsTriangleAreaTestCase extends DrupalWebTestCase {
+	private $user;
+	// Test variables.		
+	private $shape=1;
+	private $coordinates='5 5 2 5';
+	private $msg='There was an error processing your request, please check below.';
+
+	public static function getInfo() {
+		return array(
+			'name' => 'Amount of arguments for Triangle area calculation',
+			'description' => 'Validate behaivor with wrong number of arguments provided for Triangle area calculation.',
+			'group' => 'Shapes',
+			);
+	}
+
+	public function setUp() {
+		// Enable any modules required for the test.
+		parent::setUp('shapes');
+
+		// Regular user, who will perform the test.
+		$this->user = $this->drupalCreateUser(array('administer sample page'));
+		$this->drupalLogin($this->user);
+	}
+
+	public function testAmountArgumentsTriangleArea(){
+		$edit = array(
+			'shape' => $this->shape,
+			'coordinates' => $this->coordinates,
+			);
+		$this->drupalPost('shapes', $edit, t('Calculate Area'));
+
+		// Look for confirmation message
+		$this->assertText(t($this->msg));
+	}
+}
+
+/**
+ * Tests the amount of arguments for Donut area calculation.
+ */
+class AmountArgumentsDonutAreaTestCase extends DrupalWebTestCase {
+	private $user;
+	// Test variables.		
+	private $shape=2;
+	private $coordinates='5 5 2 5 6';
+	private $msg='There was an error processing your request, please check below.';
+
+	public static function getInfo() {
+		return array(
+			'name' => 'Amount of arguments for Donut area calculation',
+			'description' => 'Validate behaivor with wrong number of arguments provided for Donut area calculation.',
+			'group' => 'Shapes',
+			);
+	}
+
+	public function setUp() {
+		// Enable any modules required for the test.
+		parent::setUp('shapes');
+
+		// Regular user, who will perform the test.
+		$this->user = $this->drupalCreateUser(array('administer sample page'));
+		$this->drupalLogin($this->user);
+	}
+
+	public function testAmountArgumentsDonutArea(){
+		$edit = array(
+			'shape' => $this->shape,
+			'coordinates' => $this->coordinates,
+			);
+		$this->drupalPost('shapes', $edit, t('Calculate Area'));
+
+		// Look for confirmation message
+		$this->assertText(t($this->msg));
+	}
+}
+
+/**
+ * Tests the presence of non numeric arguments for shape area calculation.
+ */
+class NonNumericArgAreaTestCase extends DrupalWebTestCase {
+	private $user;
+	// Test variables.		
+	private $shape=2;
+	private $coordinates='5 foo bar';
+	private $msg='There was an error processing your request, please check below.';
+
+	public static function getInfo() {
+		return array(
+			'name' => 'Non numeric arguments test',
+			'description' => 'Validate behaivor with non numeric arguments input for shape area calculation.',
+			'group' => 'Shapes',
+			);
+	}
+
+	public function setUp() {
+		// Enable any modules required for the test.
+		parent::setUp('shapes');
+
+		// Regular user, who will perform the test.
+		$this->user = $this->drupalCreateUser(array('administer sample page'));
+		$this->drupalLogin($this->user);
+	}
+
+	public function testNonNumericArguments(){
+		$edit = array(
+			'shape' => $this->shape,
+			'coordinates' => $this->coordinates,
+			);
+		$this->drupalPost('shapes', $edit, t('Calculate Area'));
+
+		// Look for confirmation message
+		$this->assertText(t($this->msg));
+	}
+}
+
+/**
+ * Tests the presence of multiple white spaces between arguments for shape area calculation.
+ */
+class MultWhiteSpacesArgAreaTestCase extends DrupalWebTestCase {
+	private $user;
+	// Test variables.		
+	private $shape=1;
+	private $coordinates='  5 2     2.5  7   8    1.2';
+	private $msg='Your request was succesfully procesed.';
+
+	public static function getInfo() {
+		return array(
+			'name' => 'Multiple white spaces in arguments test',
+			'description' => 'Validate behaivor with multiple white spaces in arguments input for shape area calculation. The spected behaivor is the module cleaning the entry and calculating the shape area.',
+			'group' => 'Shapes',
+			);
+	}
+
+	public function setUp() {
+		// Enable any modules required for the test.
+		parent::setUp('shapes');
+
+		// Regular user, who will perform the test.
+		$this->user = $this->drupalCreateUser(array('administer sample page'));
+		$this->drupalLogin($this->user);
+	}
+
+	public function testMultWhiteSpacesArguments(){
+		$edit = array(
+			'shape' => $this->shape,
+			'coordinates' => $this->coordinates,
+			);
+		$this->drupalPost('shapes', $edit, t('Calculate Area'));
+
+		// Look for confirmation message
+		$this->assertText(t($this->msg));
+	}
+}

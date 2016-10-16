@@ -1,0 +1,5 @@
+Features achieved:
+* Shape form validation
+* Shape area calculation, message printed with this data
+* Unit testing (using SimpleTest Drupal testing framework, shiped with the module)
+* Data storage (custom db table created during module installation)
